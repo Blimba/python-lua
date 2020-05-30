@@ -24,6 +24,17 @@ class NodeVisitor(ast.NodeVisitor):
         self.last_end_mode = TokenEndMode.LINE_FEED
         self.output = []
 
+    def local_keyword(self, target):
+        last_ctx = self.context.last()
+        target_name = target
+        if "[" in target_name:
+            target_name = target_name[:target_name.index("[")]
+        if not (self.context.top() and not self.config["top_locals"]) and "." not in target and not last_ctx[
+            "locals"].exists(target_name) and not last_ctx["globals"].exists(target_name):
+            local_keyword = "local "
+        else:
+            return ""
+
     def visit_Assign(self, node):
         """Visit assign"""
         target = self.visit_all(node.targets[0], inline=True)
@@ -56,8 +67,11 @@ class NodeVisitor(ast.NodeVisitor):
         target = self.visit_all(node.target, inline=True)
         value = self.visit_all(node.value, inline=True)
 
-        self.emit("local {target} = {value}"
-                  .format(target=target,
+        local_keyword = self.local_keyword(target)
+
+        self.emit("{local}{target} = {value}"
+                  .format(local=local_keyword,
+                          target=target,
                           value=value))
 
     def visit_AugAssign(self, node):
