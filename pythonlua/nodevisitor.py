@@ -249,7 +249,7 @@ class NodeVisitor(ast.NodeVisitor):
 
         for key in node.keys:
             value = self.visit_all(key, inline=True)
-            if isinstance(key, ast.Str) or isinstance(key, ast.Name):
+            if isinstance(key, (ast.Str, ast.Name, ast.Attribute)):
                 value = "[{}]".format(value)
             keys.append(value)
 
@@ -551,7 +551,11 @@ class NodeVisitor(ast.NodeVisitor):
         self.emit(NameConstantDesc.NAME[node.value])
 
     def visit_Nonlocal(self, node):
-        """Visit nonlocal"""
+        """Visit nonlocal
+        in lua we don't have issues accessing locals outside of the function scope in nested functions. In python we
+        require the nonlocal keyword. The translator doesn't need to worry.
+        """
+        pass
 
     def visit_Num(self, node):
         """Visit number"""

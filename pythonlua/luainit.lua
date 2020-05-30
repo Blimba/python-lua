@@ -738,6 +738,7 @@ function class(class_init, name, bases, mtmethods, properties)
 
     -- attributes metatable for redirecting calls
     amt = {}
+    amt.__type = c
     amt.__call = function(...)
         return mt.__call(...)
     end
