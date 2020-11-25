@@ -11,6 +11,7 @@ setup(
     author_email="mail@eremindmitry.ru, bartlimburg@gmail.com",
     licence="Apache",
     packages=find_packages(),
+    data_files=[("pythonlua",['pythonlua/luainit.lua']), ("",['LICENSE'])],
     package_data={'': ['LICENSE', 'pythonlua/luainit.lua']},
     include_package_data=True,
     long_description="",
